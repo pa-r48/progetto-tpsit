@@ -6,7 +6,7 @@ export const login = (utenti) =>{
     let user;
     let pass;
 
-    console.log("---------------------------------");
+    console.log("\n---------------------------------");
     user = prompt("Username: ");
     pass = prompt("Password: ");
     switch(checkCred(user, pass, utenti)){
@@ -37,9 +37,25 @@ const checkCred = (user, pass, utenti) =>{
 
 
 export const registra = (utenti) =>{
-    console.log("---------------------------------");
-    user = prompt("Username: ");
-    pass = prompt("Password: ");
+    let user;
+    let pass;
 
+    while(true){
+        console.log("\n---------------------------------");
+        user = prompt("Username: ");
+        pass = prompt("Password: ");
+        
+        if(utenti.filter(i => i.user === user).length === 0){
+            utenti.push({user:user, pass:pass, role:0});
+            break;
+        }
+        else{
+            console.log("---------------------------------\nERRORE, username già in uso");
+        }
+    }
+}
+
+
+const user = () =>{
     
 }

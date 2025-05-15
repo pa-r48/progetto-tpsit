@@ -13,10 +13,12 @@ do{
     switch(parseInt(scelta)){
         case 1:
             funzioni.login(utenti);
+            scelta = null;
             break;
         
         case 2:
             funzioni.registra(utenti);
+            scelta = null;
             break;
 
         case 0:
