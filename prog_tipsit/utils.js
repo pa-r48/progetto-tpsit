@@ -2,13 +2,8 @@
 import PromptSync from "prompt-sync"
 const prompt = PromptSync();
 
-export const login = (utenti) =>{
-    let user;
-    let pass;
-
+export const login = (utenti, user, pass) =>{
     console.log("\n---------------------------------");
-    user = prompt("Username: ");
-    pass = prompt("Password: ");
     switch(checkCred(user, pass, utenti)){
         case -1:
             console.log("ERRORE, controllare username e/o password");
@@ -44,7 +39,7 @@ export const registra = (utenti) =>{
 
 
 
-export const userInterface = (utenti,libri) =>{
+export const userInterface = (utenti,libri,user) =>{
     let scelta = null;
     
     do{
@@ -62,7 +57,7 @@ export const userInterface = (utenti,libri) =>{
                 break;
 
             case 3:
-                userPrestiti(utenti,libri);
+                userPrestiti(utenti,libri,user);
                 scelta = null;
                 break;
     
@@ -129,10 +124,62 @@ const search = (libri) =>{
                         console.log(`\n${i.titolo}\t|${i.autore}\t|${i.genere}\t|${i.isbn}`);
                 }});
             break;
+
+            case 0:
+                break;
+
+            default:
+                console.log("\nERRORE, inserisci un opzione valida")
+            break;
         }
 
     }while(scelta != 0);
 }
+
+
+const userPrestiti = (utenti, libri, user) => {
+    let scelta = null;
+
+    do {
+        console.log("\n--------------------------------\n\n1) Richiedi libro\n2) Restituisci libro\n0) Esci\n");
+        scelta = prompt("Scegli un'opzione: ");
+        switch (parseInt(scelta)) {
+            case 1:
+                console.log("\n--------------------------------\n");
+                const titolo = prompt("Inserisci il titolo: ");
+                const libro = libri.find(i => i.titolo === titolo);
+
+                if(libro){
+                    const utenteCorrente = utenti.find(i => i.user === user);
+
+                    if(!utenteCorrente.prestiti.some(l => l.titolo === libro.titolo)){
+                        utenteCorrente.prestiti.push(libro);
+                        console.log("Libro preso in prestito");
+                    } 
+                    else{
+                        console.log("Hai già questo libro in prestito");
+                    }
+                }
+                else{
+                    console.log("ERRORE, libro non trovato");
+                }
+                break;
+
+            case 2:
+                //TODO restituzione
+                break;
+
+            case 0:
+                break;
+
+            default:
+                console.log("\nERRORE, inserisci un'opzione valida");
+                break;
+        }
+
+    } while (scelta != 0);
+}
+
 
 
 const checkCred = (user, pass, utenti) =>{
