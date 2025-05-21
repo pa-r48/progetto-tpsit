@@ -3,8 +3,8 @@ import PromptSync from "prompt-sync"
 const prompt = PromptSync();
 
 let libri;
-libri = [];
-let utenti = [{user:"porco",pass:"dio",role:1}];
+libri = [{titolo:"1",autore:"2",genere:"3",isbn:"4"},{titolo:"2",autore:"2",genere:"3",isbn:"4"}];
+let utenti = [{user:"porco",pass:"dio", prestiti:[libri[1]],role:0}];
 let scelta = null;
 
 do{
@@ -12,7 +12,18 @@ do{
     scelta = prompt("Segli un opzione: ");
     switch(parseInt(scelta)){
         case 1:
-            funzioni.login(utenti);
+            switch(funzioni.login(utenti)){
+                case 0:
+                    funzioni.userInterface(utenti,libri);
+                    break;
+
+                case 1:
+                    funzioni.adminInterface(utenti,libri);
+                    break;
+
+                default:
+                    break;
+            }
             scelta = null;
             break;
         
