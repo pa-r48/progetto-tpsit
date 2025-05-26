@@ -4,7 +4,7 @@ const prompt = PromptSync();
 
 let libri;
 libri = [{titolo:"1",autore:"2",genere:"3",isbn:"4"},{titolo:"2",autore:"2",genere:"3",isbn:"4"}];
-let utenti = [{user:"porco",pass:"dio", prestiti:[libri[1]],role:0}];
+let utenti = [{user:"user",pass:"123", prestiti:[libri[1]],role:0}, {user:"admin",pass:"123", prestiti:[libri[1]],role:0}];
 let scelta = null;
 let user;
 let pass;

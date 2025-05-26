@@ -72,10 +72,91 @@ export const userInterface = (utenti,libri,user) =>{
 }
 
 
-export const adminInterface = () =>{
+export const adminInterface = (utenti, libri, user) => {
+    let scelta = null;
 
+    do {
+        console.log("\n--------------------------------\n\n1) Visualizza catalogo\n2) Aggiungi libro\n3) Rimuovi libro\n4) Visualizza utenti\n5) Prestiti utente\n6) Crea nuovo utente\n0) Esci");
+        scelta = prompt("Scegli un'opzione: ");
+
+        switch (parseInt(scelta)) {
+            case 1:
+                viewCatalogue(libri);
+                scelta = null;
+                break;
+
+            case 2:
+                const titolo = prompt("Titolo: ");
+                const autore = prompt("Autore: ");
+                const genere = prompt("Genere: ");
+                const isbn = prompt("ISBN (13 cifre): ");
+                if (isbn.length === 13 && !libri.some(l => l.isbn === isbn)) {
+                    libri.push({ titolo, autore, genere, isbn });
+                    console.log("Libro aggiunto con successo.");
+                } else {
+                    console.log("ERRORE: ISBN già esistente o non valido.");
+                }
+                scelta = null;
+                break;
+
+            case 3:
+                const isbnRem = prompt("Inserisci ISBN del libro da rimuovere: ");
+                const index = libri.findIndex(l => l.isbn === isbnRem);
+                if (index !== -1) {
+                    libri.splice(index, 1);
+                    console.log("Libro rimosso con successo.");
+                } else {
+                    console.log("Libro non trovato.");
+                }
+                scelta = null;
+                break;
+
+            case 4:
+                utenti.map(u =>{console.log(`Username: ${u.user} | Ruolo: ${u.role === 0 ? "Utente" : "Admin"}`)});
+                scelta = null;
+                break;
+
+            case 5:
+                const utenteRichiesto = prompt("Inserisci username dell'utente: ");
+                const utente = utenti.find(u => u.user === utenteRichiesto);
+                if (utente) {
+                    console.log(`\nPrestiti di ${utente.user}:`);
+                    if (utente.prestiti && utente.prestiti.length > 0) {
+                        utente.prestiti.forEach(l => {
+                            console.log(`${l.titolo} | ${l.autore} | ${l.genere} | ${l.isbn}`);
+                        });
+                    } else {
+                        console.log("Nessun libro in prestito.");
+                    }
+                } else {
+                    console.log("Utente non trovato.");
+                }
+                scelta = null;
+                break;
+
+            case 6:
+                const nuovoUser = prompt("Nuovo username: ");
+                const nuovaPass = prompt("Password: ");
+                const ruolo = prompt("Ruolo (0 = Utente, 1 = Admin): ");
+                if (!utenti.some(u => u.user === nuovoUser) && (ruolo === "0" || ruolo === "1")) {
+                    utenti.push({ user: nuovoUser, pass: nuovaPass, role: parseInt(ruolo), prestiti: [] });
+                    console.log("Utente creato con successo.");
+                } else {
+                    console.log("ERRORE: Username già esistente o ruolo non valido.");
+                }
+                scelta = null;
+                break;
+
+            case 0:
+                break;
+
+            default:
+                console.log("ERRORE, inserisci un'opzione valida.");
+                break;
+        }
+
+    } while (scelta != 0);
 }
-
 
 
 
@@ -102,6 +183,7 @@ const search = (libri) =>{
                     if(i.titolo === key){
                         console.log(`\n${i.titolo}\t|${i.autore}\t|${i.genere}\t|${i.isbn}`);
                 }});
+                break;
 
             case 2:
                 key = prompt("Autore: ");
@@ -109,6 +191,7 @@ const search = (libri) =>{
                     if(i.autore === key){
                         console.log(`\n${i.titolo}\t|${i.autore}\t|${i.genere}\t|${i.isbn}`);
                 }});
+                break;
 
             case 3:
                 key = prompt("Genere: ");
@@ -116,6 +199,7 @@ const search = (libri) =>{
                     if(i.genere === key){
                         console.log(`\n${i.titolo}\t|${i.autore}\t|${i.genere}\t|${i.isbn}`);
                 }});
+                break;
 
             case 4:
                 key = prompt("ISBN: ");
@@ -150,10 +234,10 @@ const userPrestiti = (utenti, libri, user) => {
                 const libro = libri.find(i => i.titolo === titolo);
 
                 if(libro){
-                    const utenteCorrente = utenti.find(i => i.user === user);
+                    var userCorr = utenti.find(i => i.user === user);
 
-                    if(!utenteCorrente.prestiti.some(l => l.titolo === libro.titolo)){
-                        utenteCorrente.prestiti.push(libro);
+                    if(!userCorr.prestiti.some(l => l.titolo === libro.titolo)){
+                        userCorr.prestiti.push(libro);
                         console.log("Libro preso in prestito");
                     } 
                     else{
@@ -166,8 +250,21 @@ const userPrestiti = (utenti, libri, user) => {
                 break;
 
             case 2:
-                //TODO restituzione
+                console.log("\n--------------------------------\n");
+                const titoloRestituzione = prompt("Inserisci il titolo del libro da restituire: ");
+                var userCorr = utenti.find(i => i.user === user);
+
+                const indexLibro = userCorr.prestiti.findIndex(l => l.titolo === titoloRestituzione);
+
+                if(indexLibro !== -1){
+                    userCorr.prestiti.splice(indexLibro, 1);
+                    console.log("Libro restituito correttamente");
+                } 
+                else{
+                    console.log("Non hai questo libro in prestito");
+                }
                 break;
+
 
             case 0:
                 break;
