@@ -1,77 +1,88 @@
-//TODO creare schermata di azioni per il tipo di user
 import PromptSync from "prompt-sync"
 const prompt = PromptSync();
 
-export const login = (utenti, user, pass) =>{
+/**
+ * gestisce il login di un utente controllando username e password
+ * @param {Array} utenti - array degli utenti registrati
+ * @param {string} user - username inserito
+ * @param {string} pass - password inserita
+ * @returns {number|undefined} - restituisce 0 se utente, 1 se admin, -1 se credenziali errate
+ */
+export const login = (utenti, user, pass) => {
     console.log("\n---------------------------------");
-    switch(checkCred(user, pass, utenti)){
+    switch (checkCred(user, pass, utenti)) {
         case -1:
             console.log("ERRORE, controllare username e/o password");
             break;
-        
         case 0:
             return 0;
-
         case 1:
             return 1;
     }
 }
 
-
-export const registra = (utenti) =>{
+/**
+ * registra un nuovo utente chiedendo username e password, verificando che non sia già presente
+ * @param {Array} utenti - array degli utenti esistenti
+ */
+export const registra = (utenti) => {
     let user;
     let pass;
 
-    while(true){
+    while (true) {
         console.log("\n---------------------------------");
         user = prompt("Username: ");
         pass = prompt("Password: ");
-        
-        if(utenti.filter(i => i.user === user).length === 0){
-            utenti.push({user:user, pass:pass, role:0});
+
+        if (utenti.filter(i => i.user === user).length === 0) {
+            utenti.push({ user: user, pass: pass, role: 0 });
             break;
-        }
-        else{
+        } else {
             console.log("---------------------------------\nERRORE, username già in uso");
         }
     }
 }
 
-
-
-export const userInterface = (utenti,libri,user) =>{
+/**
+ * interfaccia utente. Permette di visualizzare il catalogo, cercare libri e gestire prestiti
+ * @param {Array} utenti - array degli utenti
+ * @param {Array} libri - catalogo dei libri
+ * @param {string} user - username corrente
+ */
+export const userInterface = (utenti, libri, user) => {
     let scelta = null;
-    
-    do{
+
+    do {
         console.log("\n--------------------------------\n1) Visualizza catalogo\n2) Ricerca libro\n3) Gestione prestiti\n0) Esci\n")
         scelta = prompt("Segli un opzione: ");
-        switch(parseInt(scelta)){
+        switch (parseInt(scelta)) {
             case 1:
                 viewCatalogue(libri);
                 scelta = null;
                 break;
-            
             case 2:
                 search(libri);
                 scelta = null;
                 break;
-
             case 3:
-                userPrestiti(utenti,libri,user);
+                userPrestiti(utenti, libri, user);
                 scelta = null;
                 break;
-    
             case 0:
                 break;
-    
             default:
                 console.log("\nERRORE, inserisci un opzione valida")
                 break;
         }
-    }while(scelta != 0);
+    } while (scelta != 0);
 }
 
-
+/**
+ * interfaccia amministratore con funzionalità di gestione utenti e catalogo
+ * @param {Array} utenti - array degli utenti
+ * @param {Array} libri - catalogo dei libri
+ * @param {string} user - username corrente
+ */
 export const adminInterface = (utenti, libri, user) => {
     let scelta = null;
 
@@ -112,7 +123,9 @@ export const adminInterface = (utenti, libri, user) => {
                 break;
 
             case 4:
-                utenti.map(u =>{console.log(`Username: ${u.user} | Ruolo: ${u.role === 0 ? "Utente" : "Admin"}`)});
+                utenti.map(u => {
+                    console.log(`Username: ${u.user} | Ruolo: ${u.role === 0 ? "Utente" : "Admin"}`)
+                });
                 scelta = null;
                 break;
 
@@ -158,113 +171,100 @@ export const adminInterface = (utenti, libri, user) => {
     } while (scelta != 0);
 }
 
-
-
-//TODO isbn 13 numeri
-const viewCatalogue = (libri) =>{
+/**
+ * mostra l'intero catalogo dei libri disponibili
+ * @param {Array} libri - elenco dei libri
+ */
+const viewCatalogue = (libri) => {
     console.log("\n--------------------------------\n\nTitolo\t|Autore\t|Genere\t|ISBN");
-
-    libri.map(i =>{console.log(`\n${i.titolo}\t|${i.autore}\t|${i.genere}\t|${i.isbn}`)});
+    libri.map(i => {
+        console.log(`\n${i.titolo}\t|${i.autore}\t|${i.genere}\t|${i.isbn}`);
+    });
 }
 
-
-const search = (libri) =>{
+/**
+ * permette di cercare libri per vari parametri
+ * @param {Array} libri - Elenco dei libri
+ */
+const search = (libri) => {
     let scelta = null;
     let key = null;
-    let x = null;
 
-    do{
+    do {
         console.log("\n--------------------------------\n\nRicerca per:\n1) Titolo\n2) Autore\n3) Genere\n4) ISBN\n0) Esci\n");
         scelta = prompt("Segli un opzione: ");
-        switch(parseInt(scelta)){
+
+        switch (parseInt(scelta)) {
             case 1:
                 key = prompt("Titolo: ");
-                x =libri.map(i =>{ 
-                    if(i.titolo === key){
-                        console.log(`\n${i.titolo}\t|${i.autore}\t|${i.genere}\t|${i.isbn}`);
-                }});
                 break;
-
             case 2:
                 key = prompt("Autore: ");
-                x =libri.map(i =>{ 
-                    if(i.autore === key){
-                        console.log(`\n${i.titolo}\t|${i.autore}\t|${i.genere}\t|${i.isbn}`);
-                }});
                 break;
-
             case 3:
                 key = prompt("Genere: ");
-                x =libri.map(i =>{ 
-                    if(i.genere === key){
-                        console.log(`\n${i.titolo}\t|${i.autore}\t|${i.genere}\t|${i.isbn}`);
-                }});
                 break;
-
             case 4:
                 key = prompt("ISBN: ");
-                x =libri.map(i =>{ 
-                    if(i.isbn === key){
-                        console.log(`\n${i.titolo}\t|${i.autore}\t|${i.genere}\t|${i.isbn}`);
-                }});
-            break;
-
-            case 0:
                 break;
-
+            case 0:
+                return;
             default:
-                console.log("\nERRORE, inserisci un opzione valida")
-            break;
+                console.log("\nERRORE, inserisci un opzione valida");
+                continue;
         }
 
-    }while(scelta != 0);
+        libri.forEach(i => {
+            if (i.titolo === key || i.autore === key || i.genere === key || i.isbn === key) {
+                console.log(`\n${i.titolo}\t|${i.autore}\t|${i.genere}\t|${i.isbn}`);
+            }
+        });
+
+    } while (scelta != 0);
 }
 
-
+/**
+ * restisce i prestiti di un utente: richiedere o restituire libri
+ * @param {Array} utenti - elenco utenti
+ * @param {Array} libri - catalogo libri
+ * @param {string} user - username corrente
+ */
 const userPrestiti = (utenti, libri, user) => {
     let scelta = null;
 
     do {
         console.log("\n--------------------------------\n\n1) Richiedi libro\n2) Restituisci libro\n0) Esci\n");
         scelta = prompt("Scegli un'opzione: ");
+
         switch (parseInt(scelta)) {
             case 1:
-                console.log("\n--------------------------------\n");
                 const titolo = prompt("Inserisci il titolo: ");
                 const libro = libri.find(i => i.titolo === titolo);
+                const userCorr = utenti.find(i => i.user === user);
 
-                if(libro){
-                    var userCorr = utenti.find(i => i.user === user);
-
-                    if(!userCorr.prestiti.some(l => l.titolo === libro.titolo)){
+                if (libro) {
+                    if (!userCorr.prestiti.some(l => l.titolo === libro.titolo)) {
                         userCorr.prestiti.push(libro);
                         console.log("Libro preso in prestito");
-                    } 
-                    else{
+                    } else {
                         console.log("Hai già questo libro in prestito");
                     }
-                }
-                else{
+                } else {
                     console.log("ERRORE, libro non trovato");
                 }
                 break;
 
             case 2:
-                console.log("\n--------------------------------\n");
                 const titoloRestituzione = prompt("Inserisci il titolo del libro da restituire: ");
-                var userCorr = utenti.find(i => i.user === user);
-
                 const indexLibro = userCorr.prestiti.findIndex(l => l.titolo === titoloRestituzione);
 
-                if(indexLibro !== -1){
+                if (indexLibro !== -1) {
                     userCorr.prestiti.splice(indexLibro, 1);
                     console.log("Libro restituito correttamente");
-                } 
-                else{
+                } else {
                     console.log("Non hai questo libro in prestito");
                 }
                 break;
-
 
             case 0:
                 break;
@@ -277,15 +277,18 @@ const userPrestiti = (utenti, libri, user) => {
     } while (scelta != 0);
 }
 
-
-
-const checkCred = (user, pass, utenti) =>{
-    let x = []
-    x = utenti.filter(i => i.user === user && i.pass === pass);
-    if(x.length==1){
-        return x[0].role; //role 0 user role 1 admin
-    }
-    else{
+/**
+ * verifica le credenziali dell'utente
+ * @param {string} user - username inserito
+ * @param {string} pass - password inserita
+ * @param {Array} utenti - lista degli utenti
+ * @returns {number} - 0 se utente, 1 se admin, -1 se errore
+ */
+const checkCred = (user, pass, utenti) => {
+    const x = utenti.filter(i => i.user === user && i.pass === pass);
+    if (x.length === 1) {
+        return x[0].role; // 0 = utente, 1 = admin
+    } else {
         return -1;
     }
 }
