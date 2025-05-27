@@ -5,11 +5,11 @@ funzionali:
 	aggiornare le info di un libro
 	eliminare un libro
 	visualizzare lista dei libri
-	gestione prestiti
-	gestione restituzioni
-
-non funzionali:
-	gestione più utenti
-	cercare un libro con titolo autore genere isbn e anno
 	documentare il codice con jsdoc
 	usare github
+
+ non funzionali:
+	gestione più utenti
+	cercare un libro con titolo autore genere isbn e anno
+	gestione prestiti
+	gestione restituzioni
