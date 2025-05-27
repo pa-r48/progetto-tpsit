@@ -88,7 +88,7 @@ export const adminInterface = (utenti, libri, user) => {
 
     do {
         console.log("\n--------------------------------\n\n1) Visualizza catalogo\n2) Aggiungi libro\n3) Rimuovi libro\n4) Visualizza utenti\n5) Prestiti utente\n6) Crea nuovo utente\n0) Esci");
-        scelta = prompt("Scegli un'opzione: ");
+        scelta = prompt("\nScegli un'opzione: ");
 
         switch (parseInt(scelta)) {
             case 1:

@@ -22,7 +22,7 @@ let libri = [
  */
 let utenti = [
     { user: "user", pass: "123", prestiti: [libri[1]], role: 0 },
-    { user: "admin", pass: "123", prestiti: [], role: 0 }
+    { user: "admin", pass: "123", prestiti: [], role: 1 }
 ];
 
 let scelta = null;
